@@ -8,8 +8,8 @@ const question = require('../models/question')
 exports.getQuestion = async (req, reply) => {
   try {
     const id = req.params.id
-    const question = await question.findById(id)
-    return question
+    const Question = await question.findById(id)
+    return Question
   } catch (err) {
     throw boom.boomify(err)
   }
@@ -18,8 +18,8 @@ exports.getQuestion = async (req, reply) => {
 // Requests all questions available
 exports.getQuestions = async (req, reply) => {
   try {
-    const questions = await question.find()
-    return questions
+    const Questions = await question.find()
+    return Questions
   } catch (err) {
     throw boom.boomify(err)
   }

@@ -3,8 +3,7 @@ const mongoose = require('mongoose')
 
 const QSchema = new mongoose.Schema({
   question: String,
-  author: String,
-  date: String
+  author: String
 })
 
-module.exports = mongoose.model('Question', QSchema)
+module.exports = mongoose.model('question', QSchema)

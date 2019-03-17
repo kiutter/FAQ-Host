@@ -1,20 +1,28 @@
-var express = require('express');
-var app = express();
+const fastify = require('fastify')({
+  logger: true
+})
 const routes = require('./routes')
+const mongoose = require('mongoose')
 
-// Get the routes from a separate file
-app.use('/api', routes);
+// Connect to DB
+mongoose.connect('mongodb+srv://pwp:rest@cluster-uj4xd.mongodb.net/test?retryWrites=true', { useNewUrlParser: true })
+ .then(() => console.log('MongoDB connected…'))
+ .catch(err => console.log(err))
+
+// Loop over each route
+routes.forEach((route, index) => {
+  fastify.route(route)
+})
 
 //Server running and listening for port 1337
+
 const server = async () => {
   try {
-   await app.listen(1337, function () {
-   
-   console.log("REST API Server running and listening port 1337!")
-  })
+    await fastify.listen(1337)
+    console.log("REST API Server running and listening port 1337!")
   } catch (err) {
-	console.log.error(err)
+    console.log(err)
     process.exit(1)
   }
-}	
+}
 server()
