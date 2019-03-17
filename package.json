@@ -1,0 +1,25 @@
+{
+  "name": "faq-package",
+  "version": "0.0.0",
+  "description": "FAQ-Host project",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiutter/FAQ-Host.git"
+  },
+  "author": "Kimmo Utter <kiutter18@student.oulu.fi>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kiutter/FAQ-Host/issues"
+  },
+  "homepage": "https://github.com/kiutter/FAQ-Host#readme",
+  "dependencies": {
+    "mongodb": "^3.1.13"
+  }
+}
