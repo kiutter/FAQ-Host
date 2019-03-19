@@ -1,18 +1,14 @@
-// Controllers from controller-folder
+const express = require('express')
+const router = express.Router()
+
+
+// Controllers for different routes:
 const QController = require('../controllers/QController')
 
-const routes = [
-  {
-    method: 'GET',
-    url: '/api/questions/:id',
-    handler: QController.getQuestion
-  },
-  {
-    method: 'GET',
-    url: '/api/questions',
-    handler: QController.getQuestions
-  }
-  ]
+//Routes for questions -collection:
+router.get('/questions/:id', QController.getQuestion) 
+router.get('/questions', QController.getQuestions);
+router.post('/questions', QController.addQuestion);
 
 // Export routes when required by server application
-module.exports = routes;
+module.exports = router;
