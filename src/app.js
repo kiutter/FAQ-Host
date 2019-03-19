@@ -5,8 +5,8 @@ const routes = require('./routes')
 const mongoose = require('mongoose')
 
 // Connect to DB
-mongoose.connect('mongodb+srv://pwp:rest@cluster-uj4xd.mongodb.net/test?retryWrites=true', { useNewUrlParser: true })
- .then(() => console.log('MongoDB connected…'))
+mongoose.connect('mongodb+srv://pwp:rest@cluster-uj4xd.mongodb.net/FAQ?retryWrites=true', { useNewUrlParser: true })
+ .then(() => console.log('MongoDB connected!'))
  .catch(err => console.log(err))
 
 // Loop over each route
