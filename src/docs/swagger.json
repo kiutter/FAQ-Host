@@ -1,0 +1,148 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "FAQ - Host",
+		"description": "Programmable web project 2019 - Online",
+		"license": {
+			"name": "MIT",
+			"url": "https://opensource.org/licenses/MIT"
+		}
+	},
+	"host": "127.0.0.1:1337",
+	"basePath": "/api/",
+	"tags": [
+		{
+			"name": "FAQ",
+			"description": "API for Frequently asked questions and answers"
+		}
+	],
+	"schemes": ["http"],
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"paths": {
+		"/questions": {
+			"post": {
+				"tags": ["Questions"],
+				"description": "Create new question in system",
+				"parameters": [
+					{
+						"name": "Question",
+						"in": "body",
+						"description": "Question that we want to create",
+						"schema": {
+							"$ref": "#/definitions/Question"
+						}
+					}
+				],
+				"produces": ["application/json"],
+				"responses": {
+					"200": {
+						"description": "New question is created to the database!",
+						"schema": {
+							"$ref": "#/definitions/Question"
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": ["Questions"],
+				"summary": "Get all questions in system",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/Question"
+						}
+					}
+				}
+			}
+		},
+		"/questions/{Id}": {
+			"parameters": [
+				{
+					"name": "Id",
+					"in": "path",
+					"required": true,
+					"description": "ID of the question",
+					"type": "string"
+				}
+			],
+			"get": {
+				"tags": ["Questions"],
+				"summary": "Get the question with given ID",
+				"responses": {
+					"200": {
+						"description": "Question found!",
+						"schema": {
+							"$ref": "#/definitions/Question"
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete the question with given ID",
+				"tags": ["Questions"],
+				"responses": {
+					"200": {
+						"description": "Question is deleted!",
+						"schema": {
+							"$ref": "#/definitions/Question"
+						}
+					}
+				}
+			},
+			"put": {
+				"summary": "Update user with give ID",
+				"tags": ["Questions"],
+				"parameters": [
+					{
+						"name": "user",
+						"in": "body",
+						"description": "User with new values of properties",
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User is updated",
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"Question": {
+			"required": ["question"],
+			"properties": {
+				"question": {
+					"type": "string",
+					"uniqueItems": true
+				},
+				"author": {
+					"type": "string"
+				}
+			}
+		},
+		"Answer": {
+			"required": ["answer", "question_id"],
+			"properties": {
+				"question_id": {
+					"type": "string",
+					"uniqueItems": true
+				},
+				"answer": {
+					"type": "string"
+				},
+				"author": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
