@@ -1,9 +1,8 @@
 // Boom module to handle HTTP error responses
 const boom = require("boom");
-const express = require("express");
 const halson = require("halson");
 // The data model for questions
-const question = require("../models/question");
+const question = require("../../models/question");
 
 // Requests a certain question with the id
 exports.getQuestion = async (req, res) => {
@@ -11,7 +10,7 @@ exports.getQuestion = async (req, res) => {
 		const id = req.params.id; //get id from URI parameter
 		const Question = await question.findById(id); //find question by id
 		res.setHeader("Content-Type", "application/hal+json");
-		var resource = halson({ question: Question.question, author: Question.author, time: Question.time }).addLink("self", "/questions/" + Question._id);
+		var resource = halson({ question: Question.question, author: Question.author, time: Question.time }).addLink("self", "/questions/" + Question._id); //Add HAL links
 		res.send(JSON.stringify(resource));
 		return Question;
 	} catch (err) {
@@ -38,6 +37,7 @@ exports.getQuestions = async (req, res) => {
 
 // Add a new question
 exports.addQuestion = async (req, res) => {
+	console.log(req.body);
 	var AQuestion = await question
 		.create(req.body)
 		.then(item => {
@@ -46,5 +46,6 @@ exports.addQuestion = async (req, res) => {
 		.catch(err => {
 			res.status(400).send("Unable to save to database");
 		});
+
 	return AQuestion;
 };

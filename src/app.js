@@ -9,7 +9,19 @@ var swaggerUi = require("swagger-ui-express"),
 	swaggerDocument = require("./docs/swagger.json");
 
 //Import routes:
-const routes = require("./routes");
+const questions = require("./routes/questions");
+
+//Add bodyparser to handle JSON
+app.use(bodyParser.json());
+app.use(
+	bodyParser.urlencoded({
+		extended: true
+	})
+);
+
+//Get routes from separate file
+app.use("/api/questions", questions);
+app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // ********** CREDENTIALS FOR MONGODB ATLAS **********
 
@@ -18,13 +30,6 @@ var user = "pwp",
 	collection = "FAQ";
 // ***************************************************
 
-app.use(bodyParser.json());
-app.use(
-	bodyParser.urlencoded({
-		extended: true
-	})
-);
-
 // Connect to DB
 mongoose
 	.connect("mongodb+srv://" + user + ":" + pw + "@cluster-uj4xd.mongodb.net/" + collection + "?retryWrites=true", {
@@ -32,10 +37,6 @@ mongoose
 	})
 	.then(() => console.log("MongoDB connected!"))
 	.catch(err => console.log(err));
-
-//Get routes from separate file
-app.use("/api", routes);
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //Server running and listening for port 1337
 const server = async () => {

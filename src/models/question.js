@@ -1,6 +1,6 @@
 // Model for Question
 const mongoose = require("mongoose");
-
+const ASchema = require("./answer").ASchema;
 //Schema for questions
 const QSchema = new mongoose.Schema(
 	{
@@ -9,6 +9,9 @@ const QSchema = new mongoose.Schema(
 		time: {
 			type: Date,
 			default: Date.now
+		},
+		answer: {
+			type: [ASchema]
 		}
 	},
 	{
