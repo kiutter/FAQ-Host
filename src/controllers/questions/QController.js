@@ -1,14 +1,14 @@
 // Boom module to handle HTTP error responses
 const boom = require("boom");
 const halson = require("halson");
-// The data model for questions
-const question = require("../../models/question");
+// The data models
+const models = require("../../models/models.js");
 
 // Requests a certain question with the id
 exports.getQuestion = async (req, res) => {
 	try {
 		const id = req.params.id; //get id from URI parameter
-		const Question = await question.findById(id); //find question by id
+		const Question = await models.Question.findById(id); //find question by id
 		res.setHeader("Content-Type", "application/hal+json");
 		var resource = halson({ question: Question.question, author: Question.author, time: Question.time }).addLink("self", "/questions/" + Question._id); //Add HAL links
 		res.send(JSON.stringify(resource));
@@ -21,11 +21,13 @@ exports.getQuestion = async (req, res) => {
 // Requests all questions available
 exports.getQuestions = async (req, res) => {
 	try {
-		const Questions = await question.find();
+		const Questions = await models.Question.find();
 		res.setHeader("Content-Type", "application/hal+json");
 		var results = [];
 		for (var i = 0; i < Questions.length; i++) {
-			var resource = halson({ question: Questions[i].question, author: Questions[i].author, time: Questions[i].time }).addLink("self", "/questions/" + Questions[i]._id);
+			var resource = halson({ question: Questions[i].question, author: Questions[i].author, time: Questions[i].time })
+				.addLink("self", "/questions/" + Questions[i]._id)
+				.addLink("answer-for", "/questions/" + Question._id, "/answers/");
 			results.push(resource);
 		}
 		res.send(JSON.stringify(results));
@@ -38,8 +40,7 @@ exports.getQuestions = async (req, res) => {
 // Add a new question
 exports.addQuestion = async (req, res) => {
 	console.log(req.body);
-	var AQuestion = await question
-		.create(req.body)
+	var AQuestion = await models.Question.create(req.body)
 		.then(item => {
 			res.send("New question added.");
 		})

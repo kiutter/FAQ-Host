@@ -5,8 +5,8 @@ const mongoose = require("mongoose"),
 	bodyParser = require("body-parser");
 
 // Swagger
-var swaggerUi = require("swagger-ui-express"),
-	swaggerDocument = require("./docs/swagger.json");
+//var swaggerUi = require("swagger-ui-express"),
+//	swaggerDocument = require("./docs/swagger.json");
 
 //Import routes:
 const questions = require("./routes/questions");
@@ -21,7 +21,7 @@ app.use(
 
 //Get routes from separate file
 app.use("/api/questions", questions);
-app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // ********** CREDENTIALS FOR MONGODB ATLAS **********
 

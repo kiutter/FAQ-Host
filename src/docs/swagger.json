@@ -58,89 +58,114 @@
 				}
 			}
 		},
-		"/questions/{Id}": {
-			"parameters": [
-				{
-					"name": "Id",
-					"in": "path",
-					"required": true,
-					"description": "ID of the question",
-					"type": "string"
-				}
-			],
-			"get": {
-				"tags": ["Questions"],
-				"summary": "Get the question with given ID",
-				"responses": {
-					"200": {
-						"description": "Question found!",
-						"schema": {
-							"$ref": "#/definitions/Question"
-						}
-					}
-				}
-			},
-			"delete": {
-				"summary": "Delete the question with given ID",
-				"tags": ["Questions"],
-				"responses": {
-					"200": {
-						"description": "Question is deleted!",
-						"schema": {
-							"$ref": "#/definitions/Question"
-						}
-					}
-				}
-			},
-			"put": {
-				"summary": "Update user with give ID",
-				"tags": ["Questions"],
+		"/questions/{Id}/answers": {
+			"post": {
+				"tags": ["Answers"],
+				"description": "Create new answer to certain question",
 				"parameters": [
 					{
-						"name": "user",
+						"name": "Answer",
 						"in": "body",
-						"description": "User with new values of properties",
+						"description": "Answer that we want to create",
 						"schema": {
-							"$ref": "#/definitions/User"
+							"$ref": "#/definitions/Answer"
 						}
 					}
 				],
+				"produces": ["application/json"],
 				"responses": {
 					"200": {
-						"description": "User is updated",
+						"description": "New answer is created to the database!",
 						"schema": {
-							"$ref": "#/definitions/User"
+							"$ref": "#/definitions/Answer"
+						}
+					}
+				}
+			},
+			"/questions/{Id}": {
+				"parameters": [
+					{
+						"name": "Id",
+						"in": "path",
+						"required": true,
+						"description": "ID of the question",
+						"type": "string"
+					}
+				],
+				"get": {
+					"tags": ["Questions"],
+					"summary": "Get the question with given ID",
+					"responses": {
+						"200": {
+							"description": "Question found!",
+							"schema": {
+								"$ref": "#/definitions/Question"
+							}
+						}
+					}
+				},
+				"delete": {
+					"summary": "Delete the question with given ID",
+					"tags": ["Questions"],
+					"responses": {
+						"200": {
+							"description": "Question is deleted!",
+							"schema": {
+								"$ref": "#/definitions/Question"
+							}
+						}
+					}
+				},
+				"put": {
+					"summary": "Update user with give ID",
+					"tags": ["Questions"],
+					"parameters": [
+						{
+							"name": "user",
+							"in": "body",
+							"description": "User with new values of properties",
+							"schema": {
+								"$ref": "#/definitions/User"
+							}
+						}
+					],
+					"responses": {
+						"200": {
+							"description": "User is updated",
+							"schema": {
+								"$ref": "#/definitions/User"
+							}
 						}
 					}
 				}
 			}
-		}
-	},
-	"definitions": {
-		"Question": {
-			"required": ["question"],
-			"properties": {
-				"question": {
-					"type": "string",
-					"uniqueItems": true
-				},
-				"author": {
-					"type": "string"
-				}
-			}
 		},
-		"Answer": {
-			"required": ["answer", "question_id"],
-			"properties": {
-				"question_id": {
-					"type": "string",
-					"uniqueItems": true
-				},
-				"answer": {
-					"type": "string"
-				},
-				"author": {
-					"type": "string"
+		"definitions": {
+			"Question": {
+				"required": ["question"],
+				"properties": {
+					"question": {
+						"type": "string",
+						"uniqueItems": true
+					},
+					"author": {
+						"type": "string"
+					}
+				}
+			},
+			"Answer": {
+				"required": ["answer", "question_id"],
+				"properties": {
+					"question_id": {
+						"type": "string",
+						"uniqueItems": true
+					},
+					"answer": {
+						"type": "string"
+					},
+					"author": {
+						"type": "string"
+					}
 				}
 			}
 		}
