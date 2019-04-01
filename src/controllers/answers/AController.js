@@ -1,6 +1,6 @@
 // The data models
 const models = require("../../models/models.js");
-
+const halson = require("halson");
 // Add a new answer
 exports.addAnswer = async (req, res) => {
 	models.Question.findById(req.params.id, (err, que) => {
@@ -44,8 +44,11 @@ exports.getAnswer = async (req, res) => {
 			.populate("answers")
 			.exec((err, Q) => {
 				if (err) throw new Error(err);
+				var Qanswers = halson()
+					.addLink("self", "/questions/" + req.params.id + "/answers")
+					.addEmbed("answers", JSON.stringify(Q.answers));
 				console.log(Q.answers);
-				res.status(200).json(Q.answers);
+				res.status(200).json(Qanswers);
 			});
 	} catch (error) {
 		console.log(error);

@@ -10,11 +10,15 @@ exports.getQuestion = async (req, res) => {
 		const id = req.params.id; //get id from URI parameter
 		const Question = await models.Question.findById(id); //find question by id
 		res.setHeader("Content-Type", "application/hal+json");
-		var resource = halson({ question: Question.question, author: Question.author, time: Question.time }).addLink("self", "/questions/" + Question._id); //Add HAL links
-		res.send(JSON.stringify(resource));
+		var resource = halson({ question: Question.question, author: Question.author, time: Question.time })
+			.addLink("self", "/questions/" + Question._id) //Add self relation
+			.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+			.addLink("aa:answers-for", "/questions/" + Question._id + "/answers"); //link to get all answers
+
 		return Question;
 	} catch (err) {
-		throw boom.boomify(err);
+		err = boom.notFound("Question id not found!");
+		res.status(err.output.statusCode).json(err.output.payload);
 	}
 };
 
@@ -23,14 +27,21 @@ exports.getQuestions = async (req, res) => {
 	try {
 		const Questions = await models.Question.find();
 		res.setHeader("Content-Type", "application/hal+json");
+
 		var results = [];
 		for (var i = 0; i < Questions.length; i++) {
 			var resource = halson({ question: Questions[i].question, author: Questions[i].author, time: Questions[i].time })
 				.addLink("self", "/questions/" + Questions[i]._id)
-				.addLink("answer-for", "/questions/" + Question._id, "/answers/");
+				.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+				.addLink("aa:answers-for", "/questions/" + Question._id + "/answers"); //link to get all answers
 			results.push(resource);
 		}
-		res.send(JSON.stringify(results));
+		var resource_all = halson()
+			.addLink("self", "/questions")
+			.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+			.addLink("aa:add-question", { href: "/questions", type: "application/hal+json" }) //from "add-user" and type, user should know its a post
+			.addEmbed("questions", results);
+		res.send(JSON.stringify(resource_all));
 		return Questions;
 	} catch (err) {
 		throw boom.boomify(err);
@@ -39,14 +50,37 @@ exports.getQuestions = async (req, res) => {
 
 // Add a new question
 exports.addQuestion = async (req, res) => {
-	console.log(req.body);
-	var AQuestion = await models.Question.create(req.body)
-		.then(item => {
-			res.send("New question added.");
-		})
-		.catch(err => {
-			res.status(400).send("Unable to save to database");
-		});
+	if (req.is("*/json")) {
+		//make sure that the media type is JSON.
+		const { question, author } = req.body;
+		if (question && author) {
+			//make sure that the request has question and author for it
+			var AQuestion = await models.Question.create({ question, author }, (err, question) => {
+				if (err) {
+					console.log(err);
+					throw new Error(err);
+				}
+
+				var resource = halson({ question: question.question, author: question.author, time: question.time })
+					.addLink("self", "/questions/" + question._id) //Add self relation
+					.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+					.addLink("aa:answers-for", "/questions/" + question._id + "/answers"); //link to get all answers
+				res.send(resource);
+			})
+				.then(item => {
+					//res.send(addedQuestion);
+				})
+				.catch(err => {
+					res.status(400).send("Unable to save to database");
+				});
+		} else {
+			err = boom.notAcceptable("Invalid data! Please use format: {'question': 'question here', 'author': 'name here'}"); // didn't have all parameters
+			res.status(err.output.statusCode).json(err.output.payload);
+		}
+	} else {
+		err = boom.unsupportedMediaType("Media type not supported! Please use application/JSON"); //wrong media type error
+		res.status(err.output.statusCode).json(err.output.payload);
+	}
 
 	return AQuestion;
 };
