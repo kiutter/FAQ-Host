@@ -8,7 +8,7 @@ const AController = require("../../controllers/answers/AController");
 //Routes for questions -collection:
 router.get("/:id", QController.getQuestion);
 router.post("/:id/answers", AController.addAnswer);
-router.get("/:id/answers", AController.getAnswer);
+router.get("/:id/answers", AController.getAnswers);
 router.get("/", QController.getQuestions);
 router.post("/", QController.addQuestion);
 

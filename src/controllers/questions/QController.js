@@ -1,5 +1,6 @@
 // Boom module to handle HTTP error responses
 const boom = require("boom");
+//Module for HAL responses:
 const halson = require("halson");
 // The data models
 const models = require("../../models/models.js");
@@ -52,6 +53,7 @@ exports.getQuestions = async (req, res) => {
 exports.addQuestion = async (req, res) => {
 	if (req.is("*/json")) {
 		//make sure that the media type is JSON.
+
 		const { question, author } = req.body;
 		if (question && author) {
 			//make sure that the request has question and author for it
@@ -61,18 +63,12 @@ exports.addQuestion = async (req, res) => {
 					throw new Error(err);
 				}
 
-				var resource = halson({ question: question.question, author: question.author, time: question.time })
+				var resource = halson({ question: question.question, author: question.author, time: question.time }) // If the POST was successfull, send the added question as response in HAL+JSON.
 					.addLink("self", "/questions/" + question._id) //Add self relation
 					.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
 					.addLink("aa:answers-for", "/questions/" + question._id + "/answers"); //link to get all answers
 				res.send(resource);
-			})
-				.then(item => {
-					//res.send(addedQuestion);
-				})
-				.catch(err => {
-					res.status(400).send("Unable to save to database");
-				});
+			});
 		} else {
 			err = boom.notAcceptable("Invalid data! Please use format: {'question': 'question here', 'author': 'name here'}"); // didn't have all parameters
 			res.status(err.output.statusCode).json(err.output.payload);
@@ -82,5 +78,5 @@ exports.addQuestion = async (req, res) => {
 		res.status(err.output.statusCode).json(err.output.payload);
 	}
 
-	return AQuestion;
+	return;
 };

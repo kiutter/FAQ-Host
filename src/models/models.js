@@ -9,6 +9,10 @@ const ASchema = new mongoose.Schema(
 		time: {
 			type: Date,
 			default: Date.now
+		},
+		question: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Question"
 		}
 	},
 	{

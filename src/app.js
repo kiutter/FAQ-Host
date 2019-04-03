@@ -10,6 +10,7 @@ const mongoose = require("mongoose"),
 
 //Import routes:
 const questions = require("./routes/questions");
+const answers = require("./routes/answers");
 
 //Add bodyparser to handle JSON
 app.use(bodyParser.json());
@@ -21,6 +22,7 @@ app.use(
 
 //Get routes from separate file
 app.use("/api/questions", questions);
+app.use("/api/answers", answers);
 //app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // ********** CREDENTIALS FOR MONGODB ATLAS **********
