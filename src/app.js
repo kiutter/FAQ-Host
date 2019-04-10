@@ -4,10 +4,6 @@ const mongoose = require("mongoose"),
 	app = express(),
 	bodyParser = require("body-parser");
 
-// Swagger
-//var swaggerUi = require("swagger-ui-express"),
-//	swaggerDocument = require("./docs/swagger.json");
-
 //Import routes:
 const questions = require("./routes/questions");
 const answers = require("./routes/answers");
@@ -23,7 +19,11 @@ app.use(
 //Get routes from separate file
 app.use("/api/questions", questions);
 app.use("/api/answers", answers);
-//app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Error handling
+app.use(function(err, req, res, next) {
+	res.status(500).send("Not a valid request!");
+});
 
 // ********** CREDENTIALS FOR MONGODB ATLAS **********
 

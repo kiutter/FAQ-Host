@@ -51,32 +51,37 @@ exports.getQuestions = async (req, res) => {
 
 // Add a new question
 exports.addQuestion = async (req, res) => {
-	if (req.is("*/json")) {
-		//make sure that the media type is JSON.
+	try {
+		if (req.is("*/json")) {
+			//make sure that the media type is JSON.
 
-		const { question, author } = req.body;
-		if (question && author) {
-			//make sure that the request has question and author for it
-			var AQuestion = await models.Question.create({ question, author }, (err, question) => {
-				if (err) {
-					console.log(err);
-					throw new Error(err);
-				}
+			const { question, author } = req.body;
+			if (question && author) {
+				//make sure that the request has question and author for it
+				var AQuestion = await models.Question.create({ question, author }, (err, question) => {
+					if (err) {
+						console.log(err);
+						throw new Error(err);
+					}
 
-				var resource = halson({ question: question.question, author: question.author, time: question.time }) // If the POST was successfull, send the added question as response in HAL+JSON.
-					.addLink("self", "/questions/" + question._id) //Add self relation
-					.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
-					.addLink("aa:answers-for", "/questions/" + question._id + "/answers"); //link to get all answers
-				res.send(resource);
-			});
+					var resource = halson({ question: question.question, author: question.author, time: question.time }) // If the POST was successfull, send the added question as response in HAL+JSON.
+						.addLink("self", "/questions/" + question._id) //Add self relation
+						.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+						.addLink("aa:answers-for", "/questions/" + question._id + "/answers"); //link to get all answers
+					res.status(201).send(resource);
+				});
+			} else {
+				err = boom.notAcceptable("Invalid data! Please use format: {'question': 'question here', 'author': 'name here'}"); // didn't have all parameters
+				res.status(err.output.statusCode).json(err.output.payload);
+			}
 		} else {
-			err = boom.notAcceptable("Invalid data! Please use format: {'question': 'question here', 'author': 'name here'}"); // didn't have all parameters
+			err = boom.unsupportedMediaType("Media type not supported! Please use application/JSON"); //wrong media type error
 			res.status(err.output.statusCode).json(err.output.payload);
 		}
-	} else {
-		err = boom.unsupportedMediaType("Media type not supported! Please use application/JSON"); //wrong media type error
+
+		return;
+	} catch (error) {
+		err = boom.notAcceptable("Invalid data! Please use format: {'question': 'question here', 'author': 'name here'}"); // didn't have all parameters
 		res.status(err.output.statusCode).json(err.output.payload);
 	}
-
-	return;
 };

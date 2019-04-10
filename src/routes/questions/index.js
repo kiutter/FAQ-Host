@@ -9,6 +9,7 @@ const AController = require("../../controllers/answers/AController");
 router.get("/:id", QController.getQuestion);
 router.post("/:id/answers", AController.addAnswer);
 router.get("/:id/answers", AController.getAnswers);
+router.delete("/:id/answers/:answer_id", AController.delAnswer);
 router.get("/", QController.getQuestions);
 router.post("/", QController.addQuestion);
 
