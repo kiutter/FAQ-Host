@@ -5,8 +5,7 @@ const mongoose = require("mongoose"),
 	bodyParser = require("body-parser");
 
 //Import routes:
-const questions = require("./routes/questions");
-const answers = require("./routes/answers");
+const routes = require("./routes");
 
 //Add bodyparser to handle JSON
 app.use(bodyParser.json());
@@ -17,8 +16,7 @@ app.use(
 );
 
 //Get routes from separate file
-app.use("/api/questions", questions);
-app.use("/api/answers", answers);
+app.use("/api/questions", routes);
 
 // Error handling
 app.use(function(err, req, res, next) {
