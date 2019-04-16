@@ -6,7 +6,6 @@ const models = require("../../models/models.js");
 const halson = require("halson");
 // Add a new answer
 exports.addAnswer = async (req, res) => {
-	var new_answer;
 	try {
 		if (req.is("*/json")) {
 			models.Question.findById(req.params.id, (err, que) => {
