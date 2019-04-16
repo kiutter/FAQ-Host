@@ -1,10 +1,11 @@
 // Model for Question
 const mongoose = require("mongoose");
+var uniqueValidator = require("mongoose-unique-validator");
 
 //Schema for answers
 const ASchema = new mongoose.Schema(
 	{
-		answer: String,
+		answer: { type: String, unique: true, required: true, dropDups: true },
 		author: String,
 		time: {
 			type: Date,
@@ -19,11 +20,12 @@ const ASchema = new mongoose.Schema(
 		collection: "Answers"
 	}
 );
+ASchema.plugin(uniqueValidator);
 
 //Schema for questions
 const QSchema = new mongoose.Schema(
 	{
-		question: String,
+		question: { type: String, unique: true, required: true, dropDups: true },
 		author: String,
 		time: {
 			type: Date,
@@ -41,6 +43,7 @@ const QSchema = new mongoose.Schema(
 		collection: "Questions"
 	}
 );
+QSchema.plugin(uniqueValidator);
 
 var Question = mongoose.model("Question", QSchema);
 var Answer = mongoose.model("Answer", ASchema);

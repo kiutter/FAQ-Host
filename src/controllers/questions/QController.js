@@ -60,15 +60,15 @@ exports.addQuestion = async (req, res) => {
 				//make sure that the request has question and author for it
 				var AQuestion = await models.Question.create({ question, author }, (err, question) => {
 					if (err) {
-						console.log(err);
-						throw new Error(err);
+						err = boom.notAcceptable("Question already exists!"); // Question already exists
+						res.status(err.output.statusCode).json(err.output.payload);
+					} else {
+						var resource = halson({ question: question.question }) //, author: question.author, time: question.time }) // If the POST was successfull, send the added question as response in HAL+JSON.
+							.addLink("self", "/questions/" + question._id); //Add self relation
+						//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+						//	.addLink("aa:answers-for", "/questions/" + question._id + "/answers"); //link to get all answers
+						res.status(201).send(resource);
 					}
-
-					var resource = halson({ question: question.question }) //, author: question.author, time: question.time }) // If the POST was successfull, send the added question as response in HAL+JSON.
-						.addLink("self", "/questions/" + question._id); //Add self relation
-					//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
-					//	.addLink("aa:answers-for", "/questions/" + question._id + "/answers"); //link to get all answers
-					res.status(201).send(resource);
 				});
 			} else {
 				err = boom.notAcceptable("Invalid data! Please use format: {'question': 'question here', 'author': 'name here'}"); // didn't have all parameters
