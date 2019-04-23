@@ -9,6 +9,7 @@ const QController = require("../controllers/questions/QController");
 router.post("/:id/answers", AController.addAnswer);
 router.get("/:id/answers", AController.getAnswers);
 router.get("/:id/answers/:answer_id", AController.getAnswer);
+router.put("/:id/answers/:answer_id", AController.editAnswer);
 router.delete("/:id/answers/:answer_id", AController.delAnswer);
 
 //Routes for questions -collection:

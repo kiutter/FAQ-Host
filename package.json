@@ -1,33 +1,35 @@
 {
-  "name": "faq-package",
-  "version": "0.0.0",
-  "description": "FAQ-Host project",
-  "main": "app.js",
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "app": "./node_modules/nodemon/bin/nodemon.js index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kiutter/FAQ-Host.git"
-  },
-  "author": "Kimmo Utter <kiutter18@student.oulu.fi>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/kiutter/FAQ-Host/issues"
-  },
-  "homepage": "https://github.com/kiutter/FAQ-Host#readme",
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "boom": "^7.3.0",
-    "express": "^4.16.4",
-    "halson": "^3.0.0",
-    "mongodb": "^3.1.13",
-    "mongoose": "^5.4.19",
-    "mongoose-unique-validator": "^2.0.2",
-    "nodemon": "^1.18.10"
-  }
+	"name": "faq-package",
+	"version": "0.0.0",
+	"description": "FAQ-Host project",
+	"main": "app.js",
+	"directories": {
+		"test": "tests"
+	},
+	"scripts": {
+		"test": "mocha",
+		"app": "./node_modules/nodemon/bin/nodemon.js index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kiutter/FAQ-Host.git"
+	},
+	"author": "Kimmo Utter <kiutter18@student.oulu.fi>",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/kiutter/FAQ-Host/issues"
+	},
+	"homepage": "https://github.com/kiutter/FAQ-Host#readme",
+	"dependencies": {
+		"body-parser": "^1.18.3",
+		"boom": "^7.3.0",
+		"chai": "^4.2.0",
+		"express": "^4.16.4",
+		"halson": "^3.0.0",
+		"mocha": "^6.1.4",
+		"mongodb": "^3.1.13",
+		"mongoose": "^5.4.19",
+		"mongoose-unique-validator": "^2.0.2",
+		"nodemon": "^1.18.10"
+	}
 }

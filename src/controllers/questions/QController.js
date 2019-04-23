@@ -4,19 +4,26 @@ const boom = require("boom");
 const halson = require("halson");
 // The data models
 const models = require("../../models/models.js");
+const mongoose = require("mongoose");
 
 // Requests a certain question with the id
 exports.getQuestion = async (req, res) => {
 	try {
-		const id = req.params.id; //get id from URI parameter
-		const Question = await models.Question.findById(id); //find question by id
-		res.setHeader("Content-Type", "application/hal+json");
-		var resource = halson({ question: Question.question, author: Question.author, time: Question.time })
-			.addLink("self", "/questions/" + Question._id) //Add self relation
-			.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
-			.addLink("aa:answers-for", "/questions/" + Question._id + "/answers"); //link to get all answers
-		res.send(JSON.stringify(resource));
-		return Question;
+		if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+			const id = req.params.id; //get id from URI parameter
+			const Question = await models.Question.findById(id); //find question by id
+			res.setHeader("Content-Type", "application/hal+json");
+			var resource = halson({ question: Question.question, author: Question.author, time: Question.time })
+				.addLink("self", "/questions/" + Question._id) //Add self relation
+				.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+				.addLink("aa:answers-for", "/questions/" + Question._id + "/answers"); //link to get all answers
+			res.send(JSON.stringify(resource));
+			return Question;
+		} else {
+			//same "not found" -response, even if the id is not valid
+			err = boom.notFound("Question id not found!");
+			res.status(err.output.statusCode).json(err.output.payload);
+		}
 	} catch (err) {
 		err = boom.notFound("Question id not found!");
 		res.status(err.output.statusCode).json(err.output.payload);

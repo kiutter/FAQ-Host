@@ -1,6 +1,8 @@
 // Model for Question
 const mongoose = require("mongoose");
 var uniqueValidator = require("mongoose-unique-validator");
+mongoose.set("useCreateIndex", true);
+mongoose.set("useFindAndModify", false);
 
 //Schema for answers
 const ASchema = new mongoose.Schema(
