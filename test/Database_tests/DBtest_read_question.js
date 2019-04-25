@@ -1,20 +1,9 @@
-var assert = require("assert");
-var assert = require("assert");
-var models = require("../src/models/models");
-
-//Creates a new question to database, which we can read later.
-let q1;
-beforeEach(done => {
-	q1 = new models.Question({ question: "test question2", author: "testbot2" });
-	q1.save().then(() => {
-		//lets check it was created:
-		assert(!q1.isNew);
-		done();
-	});
-});
+var models = require("../../src/models/models");
 
 //Create a new test for reading the question
 describe("Reading a question", () => {
+	//Creates a new question to database, which we can read later.
+
 	it("Search question by question-string", done => {
 		//actual test
 		models.Question.find({ question: "test question2" }, (err, question) => {

@@ -7,7 +7,7 @@
 		"test": "tests"
 	},
 	"scripts": {
-		"test": "mocha",
+		"test": "mocha --recursive -t 10000",
 		"app": "./node_modules/nodemon/bin/nodemon.js index.js"
 	},
 	"repository": {
