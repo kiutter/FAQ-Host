@@ -33,8 +33,8 @@ exports.addAnswer = async (req, res) => {
 								//Adds the answer id to the questions answers-array
 								que.answers.push(answer._id);
 								// save
-								que.save(function(err) {
-									if (err) return handleError(err);
+								que.updateOne(function(err) {
+									if (err) return console.log(err);
 									// saved!
 								});
 
@@ -98,6 +98,7 @@ exports.getAnswers = async (req, res) => {
 							.addLink("aa:add-answer", { href: "/questions/" + req.params.id + "/answers", type: "application/hal+json" }) //from "add-answer" and type, user should know its a post
 							.addEmbed("answers", JSON.stringify(Q.answers)); // all the answers as embedded link
 						//console.log(Q.answers);
+						res.setHeader("Content-Type", "application/hal+json");
 						res.status(200).json(Qanswers);
 					} else {
 						err = boom.notFound("Question id not found!");
@@ -127,8 +128,8 @@ exports.delAnswer = async (req, res) => {
 						res.status(err.output.statusCode).json(err.output.payload);
 					} else {
 						models.Question.findById(req.params.id, function(err, question) {
-							console.log(question.answers[0]);
-							console.log(req.params.answer_id);
+							//console.log(question.answers[0]);
+							//console.log(req.params.answer_id);
 							var isInArray = question.answers.some(function(answer) {
 								if (err) {
 								}
@@ -151,7 +152,7 @@ exports.delAnswer = async (req, res) => {
 													return console.log(err);
 												}
 												question.answers.pull(req.params.answer_id);
-												question.save();
+												question.updateOne();
 											});
 											//Response as HAL
 											//var OneAnswer = halson().addLink("self", "/questions/" + req.params.id + "/answers/" + req.params.answer_id); // self-link

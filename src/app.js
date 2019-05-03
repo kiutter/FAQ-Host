@@ -49,3 +49,5 @@ const server = async () => {
 	}
 };
 server();
+
+module.exports = app;

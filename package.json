@@ -7,7 +7,7 @@
 		"test": "tests"
 	},
 	"scripts": {
-		"test": "mocha --recursive -t 10000",
+		"test": "mocha --recursive -t 10000 --exit",
 		"app": "./node_modules/nodemon/bin/nodemon.js index.js"
 	},
 	"repository": {
@@ -24,6 +24,8 @@
 		"body-parser": "^1.18.3",
 		"boom": "^7.3.0",
 		"chai": "^4.2.0",
+		"chai-http": "^4.3.0",
+		"chai-json-schema": "^1.5.0",
 		"express": "^4.16.4",
 		"halson": "^3.0.0",
 		"mocha": "^6.1.4",

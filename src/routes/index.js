@@ -5,7 +5,7 @@ const router = express.Router();
 const AController = require("../controllers/answers/AController");
 const QController = require("../controllers/questions/QController");
 
-//Routes for qanswers -collection:
+//Routes for answers -collection:
 router.post("/:id/answers", AController.addAnswer);
 router.get("/:id/answers", AController.getAnswers);
 router.get("/:id/answers/:answer_id", AController.getAnswer);
