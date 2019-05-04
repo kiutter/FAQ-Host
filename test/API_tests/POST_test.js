@@ -28,6 +28,7 @@ describe("API Test | /api/questions/", () => {
 			.send(question)
 			.end((err, res) => {
 				res.should.have.status(201); //Response should have created -statuscode
+				res.should.have.header("content-type", "application/prs.hal-forms+json; charset=utf-8");
 				res.body.should.have.property("question").eql(question.question); //check that response returns the question saved
 				res.body._links.should.have.property("self"); //check that response returns the self link
 
@@ -104,6 +105,7 @@ describe("API Test | /api/questions/{question}/answers", () => {
 				.send(answer)
 				.end((err, res) => {
 					res.should.have.status(201); //Response should have created -statuscode
+					res.should.have.header("content-type", "application/prs.hal-forms+json; charset=utf-8");
 					res.body.should.have.property("answer").eql(answer.answer); //check that response returns the answer saved
 					res.body._links.should.have.property("self"); //check that response returns the self link
 

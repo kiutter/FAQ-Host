@@ -19,7 +19,8 @@ const ASchema = new mongoose.Schema(
 		}
 	},
 	{
-		collection: "Answers"
+		collection: "Answers",
+		versionKey: false
 	}
 );
 ASchema.plugin(uniqueValidator);
@@ -42,7 +43,8 @@ const QSchema = new mongoose.Schema(
 		]
 	},
 	{
-		collection: "Questions"
+		collection: "Questions",
+		versionKey: false
 	}
 );
 QSchema.plugin(uniqueValidator);

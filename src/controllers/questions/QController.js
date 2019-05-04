@@ -12,11 +12,13 @@ exports.getQuestion = async (req, res) => {
 		if (mongoose.Types.ObjectId.isValid(req.params.id)) {
 			const id = req.params.id; //get id from URI parameter
 			const Question = await models.Question.findById(id); //find question by id
-			res.setHeader("Content-Type", "application/hal+json");
+
 			var resource = halson({ question: Question.question, author: Question.author, time: Question.time })
 				.addLink("self", "/questions/" + Question._id) //Add self relation
 				.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
 				.addLink("aa:answers-for", "/questions/" + Question._id + "/answers"); //link to get all answers
+			resource._templates = {};
+			res.setHeader("Content-Type", "application/prs.hal-forms+json");
 			res.send(JSON.stringify(resource));
 			return Question;
 		} else {
@@ -34,7 +36,6 @@ exports.getQuestion = async (req, res) => {
 exports.getQuestions = async (req, res) => {
 	try {
 		const Questions = await models.Question.find();
-		res.setHeader("Content-Type", "application/hal+json");
 
 		var results = [];
 		for (var i = 0; i < Questions.length; i++) {
@@ -49,6 +50,9 @@ exports.getQuestions = async (req, res) => {
 			.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
 			.addLink("aa:add-question", { href: "/questions", type: "application/hal+json" }) //from "add-user" and type, user should know its a post
 			.addEmbed("questions", results);
+
+		resource_all._templates = {};
+		res.setHeader("Content-Type", "application/prs.hal-forms+json");
 		res.send(JSON.stringify(resource_all));
 		return Questions;
 	} catch (err) {
@@ -74,6 +78,8 @@ exports.addQuestion = async (req, res) => {
 							.addLink("self", "/questions/" + question._id); //Add self relation
 						//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
 						//	.addLink("aa:answers-for", "/questions/" + question._id + "/answers"); //link to get all answers
+						resource._templates = {};
+						res.setHeader("Content-Type", "application/prs.hal-forms+json");
 						res.status(201).send(resource);
 					}
 				});

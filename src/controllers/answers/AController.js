@@ -26,27 +26,28 @@ exports.addAnswer = async (req, res) => {
 							// Create the new answer to db.
 							models.Answer.create(newAnswer, (err, answer) => {
 								if (err) {
-									console.log(err);
-									throw new Error(err);
+									err = boom.notAcceptable("Answer already exists!"); // Answer already exists
+									res.status(err.output.statusCode).json(err.output.payload);
+								} else {
+									//Adds the answer id to the questions answers-array
+									que.answers.push(answer._id);
+									// save
+									que.save(function(err) {
+										if (err) return console.log(err);
+										// saved!
+									});
+
+									var answers = halson({ answer: answer.answer }) //, author: answer.author, time: answer.time })
+										.addLink("self", "/questions/" + req.params.id + "/answers/" + answer._id); // self-link
+									//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+									//	.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers/") //link to answers for one question
+									//	.addLink("aa:add-answer", { href: "/questions/" + req.params.id + "/answers/", type: "application/hal+json" }); //from "add-user" and type, user should know its a post
+									answers._templates = {};
+									res.setHeader("Content-Type", "application/prs.hal-forms+json");
+									res.status(201).json(answers);
+									return answer;
+									//res.send(answer);
 								}
-
-								//Adds the answer id to the questions answers-array
-								que.answers.push(answer._id);
-								// save
-								que.updateOne(function(err) {
-									if (err) return console.log(err);
-									// saved!
-								});
-
-								var answers = halson({ answer: answer.answer }) //, author: answer.author, time: answer.time })
-									.addLink("self", "/questions/" + req.params.id + "/answers/" + answer._id); // self-link
-								//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
-								//	.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers/") //link to answers for one question
-								//	.addLink("aa:add-answer", { href: "/questions/" + req.params.id + "/answers/", type: "application/hal+json" }); //from "add-user" and type, user should know its a post
-
-								res.status(201).json(answers);
-								return answer;
-								//res.send(answer);
 							});
 						} else {
 							err = boom.notAcceptable("Invalid data! Please use format: {'answer': 'answer here', 'author': 'name here'}"); // didn't have all parameters
@@ -97,8 +98,25 @@ exports.getAnswers = async (req, res) => {
 							.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
 							.addLink("aa:add-answer", { href: "/questions/" + req.params.id + "/answers", type: "application/hal+json" }) //from "add-answer" and type, user should know its a post
 							.addEmbed("answers", JSON.stringify(Q.answers)); // all the answers as embedded link
+						Qanswers._templates = {
+							default: {
+								title: "add-answer",
+								method: "post",
+								contentType: "application/json",
+								properties: [
+									{
+										name: "answer",
+										required: true
+									},
+									{
+										name: "author",
+										required: false
+									}
+								]
+							}
+						};
 						//console.log(Q.answers);
-						res.setHeader("Content-Type", "application/hal+json");
+						res.setHeader("Content-Type", "application/prs.hal-forms+json");
 						res.status(200).json(Qanswers);
 					} else {
 						err = boom.notFound("Question id not found!");
@@ -159,6 +177,7 @@ exports.delAnswer = async (req, res) => {
 											//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
 											//	.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
 											var response = "/questions/" + req.params.id + "/answers/" + req.params.answer_id + " DELETED!";
+											res.setHeader("Content-Type", "application/json");
 											res.status(200).json(response);
 										}
 									});
@@ -189,26 +208,74 @@ exports.delAnswer = async (req, res) => {
 exports.getAnswer = async (req, res) => {
 	try {
 		if (mongoose.Types.ObjectId.isValid(req.params.id) && mongoose.Types.ObjectId.isValid(req.params.answer_id)) {
-			await models.Answer.findById({ _id: req.params.answer_id }) //finds the answer by id
-				.exec((err, A) => {
-					if (A) {
-						if (err) {
-							throw new Error(err);
-						}
-
-						var OneAnswer = halson({
-							_id: A._id,
-							answer: A.answer,
-							author: A.author,
-							time: A.time
-						})
-							.addLink("self", "/questions/" + req.params.id + "/answers" + req.params.answer_id) // self-link
-							.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
-							.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
-						res.status(200).json(OneAnswer);
-					} else {
-						err = boom.notFound("Answer id not found!");
+			models.Question.findById(req.params.id) //lets first see if the question even exists
+				.orFail()
+				.exec((err, question) => {
+					if (err) {
+						err = boom.notFound("Question id not found!");
 						res.status(err.output.statusCode).json(err.output.payload);
+					} else {
+						models.Question.findById(req.params.id, function(err, question) {
+							//console.log(question.answers[0]);
+							//console.log(req.params.answer_id);
+							var isInArray = question.answers.some(function(answer) {
+								if (err) {
+								}
+								return answer.equals(req.params.answer_id);
+							});
+
+							if (isInArray) {
+								models.Answer.findById({ _id: req.params.answer_id }) //finds the answer by id
+									.exec((err, A) => {
+										if (A) {
+											if (err) {
+												throw new Error(err);
+											}
+
+											var OneAnswer = halson({
+												_id: A._id,
+												answer: A.answer,
+												author: A.author,
+												time: A.time
+											})
+												.addLink("self", "/questions/" + req.params.id + "/answers" + req.params.answer_id) // self-link
+												.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+												.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
+											OneAnswer._templates = {
+												default: {
+													title: "Edit the answer",
+													method: "put",
+													contentType: "application/json",
+													properties: [
+														{
+															name: "question",
+															required: true
+														},
+														{
+															name: "author",
+															required: false
+														}
+													]
+												},
+												delete: {
+													title: "Delete the answer",
+													method: "delete",
+													contentType: "",
+													properties: []
+												}
+											};
+											res.setHeader("Content-Type", "application/prs.hal-forms+json");
+											res.status(200).json(OneAnswer);
+										} else {
+											err = boom.notFound("Answer id not found!");
+											res.status(err.output.statusCode).json(err.output.payload);
+										}
+									});
+							} else {
+								err = boom.notFound("This is not answer for this question!");
+								res.status(err.output.statusCode).json(err.output.payload);
+							}
+						});
 					}
 				});
 		} else {
@@ -240,29 +307,41 @@ exports.editAnswer = async (req, res) => {
 								err = boom.notFound("Question id not found!");
 								res.status(err.output.statusCode).json(err.output.payload);
 							} else {
-								models.Answer.findByIdAndUpdate({ _id: req.params.answer_id }, req.body, { new: true }) //finds the answer by id and update it
-									.exec((err, A) => {
-										if (A) {
-											if (err) {
-												err = boom.notFound("Question id not found!");
-												res.status(err.output.statusCode).json(err.output.payload);
+								var isInArray = A.answers.some(function(answer) {
+									if (err) {
+									}
+									return answer.equals(req.params.answer_id);
+								});
+
+								if (isInArray) {
+									models.Answer.findByIdAndUpdate({ _id: req.params.answer_id }, req.body, { new: true }) //finds the answer by id and update it
+										.exec((err, A) => {
+											if (A) {
+												if (err) {
+													err = boom.notFound("Question id not found!");
+													res.status(err.output.statusCode).json(err.output.payload);
+												} else {
+													var OneAnswer = halson({
+														_id: A._id,
+														answer: A.answer,
+														author: A.author,
+														time: A.time
+													}).addLink("self", "/questions/" + req.params.id + "/answers" + req.params.answer_id); // self-link
+													//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+													//	.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
+													OneAnswer._templates = {};
+													res.setHeader("Content-Type", "application/prs.hal-forms+json");
+													res.status(200).json(OneAnswer);
+												}
 											} else {
-												var OneAnswer = halson({
-													_id: A._id,
-													answer: A.answer,
-													author: A.author,
-													time: A.time
-												})
-													.addLink("self", "/questions/" + req.params.id + "/answers" + req.params.answer_id) // self-link
-													.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
-													.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
-												res.status(200).json(OneAnswer);
+												err = boom.notFound("Answer id not found!");
+												res.status(err.output.statusCode).json(err.output.payload);
 											}
-										} else {
-											err = boom.notFound("Answer id not found!");
-											res.status(err.output.statusCode).json(err.output.payload);
-										}
-									});
+										});
+								} else {
+									err = boom.notFound("This is not answer for this question!");
+									res.status(err.output.statusCode).json(err.output.payload);
+								}
 							}
 						});
 				} else {

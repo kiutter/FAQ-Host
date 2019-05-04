@@ -1,6 +1,6 @@
 var GET_Questions_Schema = {
 	type: "object",
-	required: ["_links"],
+	required: ["_links", "_templates"],
 	properties: {
 		_links: {
 			type: "object",
@@ -11,7 +11,8 @@ var GET_Questions_Schema = {
 				"name:relation": { type: "object", required: ["href", "type"] }
 			}
 		},
-		_embedded: { questions: { type: "array", items: { type: "object" } } }
+		_embedded: { questions: { type: "array", items: { type: "object" } } },
+		_templates: {}
 	}
 };
 
