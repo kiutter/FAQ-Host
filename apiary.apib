@@ -1,80 +1,521 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: http://localhost:1337/api/
 
 # FAQ-Host
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+FAQ-Host is a simple REST API for posting a questions and answers to each question.
+One question may have multiple answers. FAQ-HOST REST API uses JSON formatted requests
+and responds with HAL-FORMS Hypermedia format (https://rwcbook.github.io/hal-forms/)
 
-## Questions Collection [/questions]
+# Relations
+
+This section has descriptions for all relations used in this API. These are not resources.
+
+## questions-all
+> Points to the collection in which all the questions are located. This lists all the questions,
+which are specified in Question Profile. 
+
+## answers-for
+> Points to the collection of answers for a specific question. All answers
+are following Answer Profile.
+
+## add-answer
+> Leads to a control to add a new Answer instance.
+
+## add-question
+> Add a new Question instance.
+
+## delete
+> Deletes the associated resource. Must be accessed with DELETE
+
+## These relations are according to: [IANA RFC5988](http://www.iana.org/assignments/link-relations/link-relations.xhtml):
+
+ * **edit**
+ * **self**
+
+# Group Questions
+
+## Profile
+
+### Description
+Question is the collection of all question related resources. It describes their profile, methods
+and possible error messages.
+
+### Dependencies
+ISO 8601(Date and Time format). More info at: http://en.wikipedia.org/wiki/ISO_8601
+
+### Semantic descriptors
+* **question**, as described in: (https://schema.org/Question)
+* **author**, as described in: (https://schema.org/author)
+* **time**, using ISO 8601 format: (http://en.wikipedia.org/wiki/ISO_8601)
+
+### Related link relations
+ * [questions-all](reference/relations/questions-all)
+ * [add-question](reference/relations/add-question)
+ * [self](https://www.iana.org/assignments/link-relations/link-relations.xhtml)
+
+## Questions collection [/questions/]
+
+This collections includes all questions in the database. This is also an entrypoint
+for the FAQ-Host REST API.
 
 ### List All Questions [GET]
 
-+ Response 200 (application/json)
+Lists all questions.
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
++ Relation: questions-all
+
++ Response 200 (application/prs.hal-forms+json)
+
+    + Body
+    
+            {  
+               "_links":{  
+                  "self":{  
+                     "href":"/questions"
+                  },
+                  "curies":[  
+                     {  
+                        "name":"aa",
+                        "href":"https://faqhost.docs.apiary.io/#reference/relations/{rel}"
+                     }
+                  ],
+                  "aa:add-question":{  
+                     "href":"/questions",
+                     "type":"application/hal+json"
+                  }
+               },
+               "_templates": {},
+               "_embedded":{  
+                  "questions":[  
+                     {  
+                        "question":"How much is the fish?",
+                        "author":"Scooter",
+                        "time":"2019-04-10T19:24:32.974Z",
+                        "_links":{  
+                           "self":{  
+                              "href":"/questions/5cae42f00917e3244ca06371"
+                           },
+                           "curies":[  
+                              {  
+                                 "name":"aa",
+                                 "href":"https://faqhost.docs.apiary.io/#reference/relations/{rel}"
+                              }
+                           ],
+                           "aa:answers-for":{  
+                              "href":"/questions/undefined/answers"
+                           }
+                        }
+                     }
+                  ]
+               }
             }
-        ]
+
 
 ### Create a New Question [POST]
 
 You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+object containing a question and an author.
+
++ Relation: add-question
 
 + Request (application/json)
 
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
-        }
+    + Body
+    
+            {
+                "question": "Who are you?",
+                "author": "The Who"
+            }
+            
 
-+ Response 201 (application/json)
++ Response 201 (application/prs.hal-forms+json)
 
-    + Headers
 
-            Location: /questions/2
+    + Body
+
+            {  
+               "question":"Who are you?",
+               "_links":{  
+                  "self":{  
+                     "href":"/questions/5ccd76291866814fa896a3dd"
+                  }
+               },
+               "_templates":{  
+            
+               }
+            }
+
++ Response 406 (application/json)
+
+        This is returned if request doesn't contain question and author parameters.
+        It is also returned if question, that is being added, already exists. Both with
+        different error messages. Examples below.
 
     + Body
 
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+                "statusCode": 406,
+                "error": "Not Acceptable",
+                "message": "Question already exists! or Invalid data! Please use format: {'question': 'question here', 'author': 'name here'}"
+
             }
+
++ Response 415 (application/json)
+
+        This is returned if request is does not have a application/json content-type.
+
+    + Body
+
+            {
+                "statusCode": 415,
+                "error": "Unsupported Media Type",
+                "message": "Media type not supported! Please use application/JSON"
+            }
+            
+## Question [/questions/{id}]
+
+### Get one question [GET]
+
+This is a resource for one question.
+
++ Relation: self
+
++ Parameters
+
+    + id (string, required) - id for an existing question
+
++ Response 200 (application/prs.hal-forms+json)
+
+    + Body
+
+            {  
+               "question":"Who are you?",
+               "author":"The Who",
+               "time":"2019-05-04T11:23:21.415Z",
+               "_links":{  
+                  "self":{  
+                     "href":"/questions/5ccd76291866814fa896a3dd"
+                  },
+                  "curies":[  
+                     {  
+                        "name":"aa",
+                        "href":"https://faqhost.docs.apiary.io/#reference/relations/{rel}"
+                     }
+                  ],
+                  "aa:answers-for":{  
+                     "href":"/questions/5ccd76291866814fa896a3dd/answers"
+                  }
+               },
+               "_templates":{  
+            
+               }
+            }
+
++ Response 404 (application/json)
+
+        This error is returned, if question id does not exist or if it is not valid id.
+
+    + Body
+
+            {
+                "statusCode": 404,
+                "error": "Not Found",
+                "message": "Question id not found!"
+            }
+
+# Group Answers
+
+## Profile
+
+### Description
+Answer is the collection of all question related resources. Answers is a sub-resource of questions
+It describes their profile, methods and possible error messages.
+
+### Dependencies
+ISO 8601(Date and Time format). More info at: http://en.wikipedia.org/wiki/ISO_8601
+
+### Semantic descriptors
+* **answer**, as described in: (https://schema.org/Answer)
+* **author**, as described in: (https://schema.org/author)
+* **time**, using ISO 8601 format: (http://en.wikipedia.org/wiki/ISO_8601)
+
+### Related link relations
+ * [answers-for](reference/relations/answers-for)
+ * [add-answer](reference/relations/add-answer)
+ * [delete](reference/relations/delete)
+ * [edit](https://www.iana.org/assignments/link-relations/link-relations.xhtml)
+ * [self](https://www.iana.org/assignments/link-relations/link-relations.xhtml)
+
+## Answers [/questions/{id}/answers/]
+            
+### List All Answers [GET]
+
+Lists all answers _for a specific question_. This is a sub-resource of questions.
+
++ Relation: answers-all
+
++ Parameters
+
+    + id (string, required) - id for an existing question
+
++ Response 200 (application/prs.hal-forms+json)
+
+    + Body
+    
+            {  
+               "_links":{  
+                  "self":{  
+                     "href":"/questions/5ccd76291866814fa896a3dd/answers"
+                  },
+                  "curies":[  
+                     {  
+                        "name":"aa",
+                        "href":"https://faqhost.docs.apiary.io/#reference/relations/{rel}"
+                     }
+                  ],
+                  "aa:add-answer":{  
+                     "href":"/questions/5ccd76291866814fa896a3dd/answers",
+                     "type":"application/hal+json"
+                  }
+               },
+               "_embedded":{  
+                  "answers":{  
+                     "0":{  
+                        "_id":"5ccd7ca31866814fa896a3de",
+                        "answer":"Get to da choppah!"
+                     }
+                  }
+               },
+               "_templates":{  
+                  "default":{  
+                     "title":"add-answer",
+                     "method":"post",
+                     "contentType":"application/json",
+                     "properties":[  
+                        {  
+                           "name":"answer",
+                           "required":true
+                        },
+                        {  
+                           "name":"author",
+                           "required":false
+                        }
+                     ]
+                  }
+               }
+            } 
+
++ Response 404 (application/json)
+
+        This error is returned, if question id or answer id does not exist in database
+        or if they are not valid id's.
+
+    + Body
+
+            {
+                "statusCode": 404,
+                "error": "Not Found",
+                "message": "Question id not found!"
+            }
+
+
+
+### Add a new answer [POST]
+
+Adds a new answer to a question
+
++ Relation: add-answer
+
++ Parameters
+
+    + id (string, required) - id for an existing question
+    
++ Request (application/json)
+
+    + Body
+    
+            {  
+               "answer":"Get to da choppah!",
+               "author":"Big Arnold"
+            }
+
++ Response 201 (application/prs.hal-forms+json)
+
+    + Body  
+
+            {  
+               "answer":"Get to da choppah!",
+               "_links":{  
+                  "self":{  
+                     "href":"/questions/5ccd76291866814fa896a3dd/answers/5ccd7ca31866814fa896a3de"
+                  }
+               },
+               "_templates":{  
+            
+               }
+            }
+
++ Response 404 (application/json)
+
+        If the question id is not valid or it is not found, this error is given.
+
+    + Body  
+    
+            {
+                "statusCode": 404,
+                "error": "Not Found",
+                "message": "Question id not found!"
+            }
+            
++ Response 406 (application/json)
+
+        If the answer already exists, or if the request body is missing parameters
+
+    + Body  
+    
+            {
+                "statusCode": 406,
+                "error": "Not Acceptable",
+                "message": "Answer already exists! or Invalid data! Please use format: {'answer': 'answer here', 'author': 'name here'}"
+            }            
+
++ Response 415 (application/json)
+
+        If the request is not application/json
+        
+    + Body  
+    
+            {
+                "statusCode": 415,
+                "error": "Unsupported Media Type",
+                "message": "Media type not supported! Please use application/JSON"
+            }           
+            
+    
+## Answer [/questions/{id}/answers/{answer_id}]
+
+A specific answer by id for a one question.
+            
+### Get a specific answer [GET]
+
+Gets a specific answer for a specific question.
+
++ Relation: self
+
++ Parameters
+
+    + id (string, required) - id for an existing question
+    
+    + answer_id (string, required) - id for an existing answer
+
++ Response 200 (application/prs.hal-forms+json)
+
+    + Body
+    
+            {  
+               "_id":"5ccd7ca31866814fa896a3de",
+               "answer":"Get to da choppah!",
+               "author":"Big Arnold",
+               "time":"2019-05-04T11:50:59.569Z",
+               "_links":{  
+                  "self":{  
+                     "href":"/questions/5ccd76291866814fa896a3dd/answers5ccd7ca31866814fa896a3de"
+                  },
+                  "curies":[  
+                     {  
+                        "name":"aa",
+                        "href":"https://faqhost.docs.apiary.io/#reference/relations/{rel}"
+                     }
+                  ],
+                  "aa:answers-for":{  
+                     "href":"/questions/5ccd76291866814fa896a3dd/answers"
+                  }
+               },
+               "_templates":{  
+                  "default":{  
+                     "title":"Edit the answer",
+                     "method":"put",
+                     "contentType":"application/json",
+                     "properties":[  
+                        {  
+                           "name":"question",
+                           "required":true
+                        },
+                        {  
+                           "name":"author",
+                           "required":false
+                        }
+                     ]
+                  },
+                  "delete":{  
+                     "title":"Delete the answer",
+                     "method":"delete",
+                     "contentType":"",
+                     "properties":[  
+            
+                     ]
+                  }
+               }
+            }
+
+
+### Edit a specific answer [PUT]
+
+Edits a specific answer for a specific question.
+
++ Relation: edit
+
++ Parameters
+
+    + id (string, required) - id for an existing question
+    
+    + answer_id (string, required) - id for an existing answer
+
++ Request (application/json)
+
+    + Body
+    
+            {  
+               "answer":"Where is my machine gun!",
+               "author":"Big Arnold"
+            }
+
++ Response 200 (application/prs.hal-forms+json)
+
+    + Body           
+            
+            {  
+               "_id":"5ccd7ca31866814fa896a3de",
+               "answer":"Where is my machine gun!",
+               "author":"Big Arnold",
+               "time":"2019-05-04T11:50:59.569Z",
+               "_links":{  
+                  "self":{  
+                     "href":"/questions/5ccd76291866814fa896a3dd/answers5ccd7ca31866814fa896a3de"
+                  }
+               },
+               "_templates":{  
+            
+               }
+            }
+
+ 
+### Delete a specific answer [DELETE]
+
+Deletes a specific answer for a specific question.
+
++ Relation: delete
+
++ Parameters
+
+    + id (string, required) - id for an existing question
+    
+    + answer_id (string, required) - id for an existing answer
+    
+
++ Response 200 (application/prs.hal-forms+json)
+
+    + Body  
+    
+            "/questions/5ccd76291866814fa896a3dd/answers/5ccd7ca31866814fa896a3de DELETED!"
