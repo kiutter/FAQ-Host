@@ -39,7 +39,7 @@ exports.addAnswer = async (req, res) => {
 
 									var answers = halson({ answer: answer.answer }) //, author: answer.author, time: answer.time })
 										.addLink("self", "/questions/" + req.params.id + "/answers/" + answer._id); // self-link
-									//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+									//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 									//	.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers/") //link to answers for one question
 									//	.addLink("aa:add-answer", { href: "/questions/" + req.params.id + "/answers/", type: "application/hal+json" }); //from "add-user" and type, user should know its a post
 									answers._templates = {};
@@ -95,7 +95,7 @@ exports.getAnswers = async (req, res) => {
 						}
 						var Qanswers = halson()
 							.addLink("self", "/questions/" + req.params.id + "/answers") // self-link
-							.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+							.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 							.addLink("aa:add-answer", { href: "/questions/" + req.params.id + "/answers", type: "application/hal+json" }) //from "add-answer" and type, user should know its a post
 							.addEmbed("answers", JSON.stringify(Q.answers)); // all the answers as embedded link
 						Qanswers._templates = {
@@ -174,7 +174,7 @@ exports.delAnswer = async (req, res) => {
 											});
 											//Response as HAL
 											//var OneAnswer = halson().addLink("self", "/questions/" + req.params.id + "/answers/" + req.params.answer_id); // self-link
-											//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+											//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 											//	.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
 											var response = "/questions/" + req.params.id + "/answers/" + req.params.answer_id + " DELETED!";
 											res.setHeader("Content-Type", "application/json");
@@ -239,7 +239,7 @@ exports.getAnswer = async (req, res) => {
 												time: A.time
 											})
 												.addLink("self", "/questions/" + req.params.id + "/answers" + req.params.answer_id) // self-link
-												.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+												.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 												.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
 											OneAnswer._templates = {
 												default: {
@@ -327,7 +327,7 @@ exports.editAnswer = async (req, res) => {
 													author: A.author,
 													time: A.time
 												}).addLink("self", "/questions/" + req.params.id + "/answers" + req.params.answer_id); // self-link
-												//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+												//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 												//	.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
 												OneAnswer._templates = {};
 												res.setHeader("Content-Type", "application/prs.hal-forms+json");
@@ -380,7 +380,7 @@ exports.editAnswer = async (req, res) => {
 // 					for (var i = 0; i < Answers.length; i++) {
 // 						var resource = halson({ answer: Answers[i].answer, author: Answers[i].author, question: Answers[i].question, time: Answers[i].time })
 // 							.addLink("self", "/answers/" + Answers[i]._id)
-// 							.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+// 							.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 // 							.addLink("aa:answers-for", "/questions/" + Answers[i].question["_id"] + "/answers"); //link to get all answers
 // 						results.push(resource);
 // 					}
@@ -388,7 +388,7 @@ exports.editAnswer = async (req, res) => {
 
 // 				var resource_all = halson()
 // 					.addLink("self", "/answers")
-// 					.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+// 					.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 // 					.addLink("aa:answers-for", "/questions/{question id}/answers") //link to get all answers for one question
 // 					.addLink("aa:questions-all", "/questions") //link to get all questions
 // 					.addEmbed("answers", results);

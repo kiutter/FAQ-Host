@@ -15,7 +15,7 @@ exports.getQuestion = async (req, res) => {
 
 			var resource = halson({ question: Question.question, author: Question.author, time: Question.time })
 				.addLink("self", "/questions/" + Question._id) //Add self relation
-				.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+				.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 				.addLink("aa:answers-for", "/questions/" + Question._id + "/answers"); //link to get all answers
 			resource._templates = {};
 			res.setHeader("Content-Type", "application/prs.hal-forms+json");
@@ -41,13 +41,13 @@ exports.getQuestions = async (req, res) => {
 		for (var i = 0; i < Questions.length; i++) {
 			var resource = halson({ question: Questions[i].question }) //, author: Questions[i].author, time: Questions[i].time })
 				.addLink("self", "/questions/" + Questions[i]._id);
-			//		.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+			//		.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 			//		.addLink("aa:answers-for", "/questions/" + Questions[i]._id + "/answers"); //link to get all answers
 			results.push(resource);
 		}
 		var resource_all = halson()
 			.addLink("self", "/questions")
-			.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+			.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 			.addLink("aa:add-question", { href: "/questions", type: "application/hal+json" }) //from "add-user" and type, user should know its a post
 			.addEmbed("questions", results);
 
@@ -76,7 +76,7 @@ exports.addQuestion = async (req, res) => {
 					} else {
 						var resource = halson({ question: question.question }) //, author: question.author, time: question.time }) // If the POST was successfull, send the added question as response in HAL+JSON.
 							.addLink("self", "/questions/" + question._id); //Add self relation
-						//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+						//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#introduction/relations/{rel}" }]) //Add curies for relation docs
 						//	.addLink("aa:answers-for", "/questions/" + question._id + "/answers"); //link to get all answers
 						resource._templates = {};
 						res.setHeader("Content-Type", "application/prs.hal-forms+json");

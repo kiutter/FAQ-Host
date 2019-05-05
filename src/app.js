@@ -41,8 +41,8 @@ mongoose
 //Server running and listening for port 1337
 const server = async () => {
 	try {
-		await app.listen(1337);
-		console.log("REST API Server running and listening port 1337!");
+		await app.listen(process.env.port || 8080);
+		console.log("REST API Server running and listening port 8080!");
 	} catch (err) {
 		console.log(err);
 		process.exit(1);
