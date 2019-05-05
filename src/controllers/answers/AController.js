@@ -315,27 +315,23 @@ exports.editAnswer = async (req, res) => {
 
 								if (isInArray) {
 									models.Answer.findByIdAndUpdate({ _id: req.params.answer_id }, req.body, { new: true }) //finds the answer by id and update it
+										.orFail()
 										.exec((err, A) => {
-											if (A) {
-												if (err) {
-													err = boom.notFound("Question id not found!");
-													res.status(err.output.statusCode).json(err.output.payload);
-												} else {
-													var OneAnswer = halson({
-														_id: A._id,
-														answer: A.answer,
-														author: A.author,
-														time: A.time
-													}).addLink("self", "/questions/" + req.params.id + "/answers" + req.params.answer_id); // self-link
-													//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
-													//	.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
-													OneAnswer._templates = {};
-													res.setHeader("Content-Type", "application/prs.hal-forms+json");
-													res.status(200).json(OneAnswer);
-												}
-											} else {
-												err = boom.notFound("Answer id not found!");
+											if (err) {
+												err = boom.notAcceptable("Answer already exists!");
 												res.status(err.output.statusCode).json(err.output.payload);
+											} else {
+												var OneAnswer = halson({
+													_id: A._id,
+													answer: A.answer,
+													author: A.author,
+													time: A.time
+												}).addLink("self", "/questions/" + req.params.id + "/answers" + req.params.answer_id); // self-link
+												//	.addLink("curies", [{ name: "aa", href: "https://faqhost.docs.apiary.io/#reference/relations/{rel}" }]) //Add curies for relation docs
+												//	.addLink("aa:answers-for", "/questions/" + req.params.id + "/answers"); //link to get all answers for certain question
+												OneAnswer._templates = {};
+												res.setHeader("Content-Type", "application/prs.hal-forms+json");
+												res.status(200).json(OneAnswer);
 											}
 										});
 								} else {
