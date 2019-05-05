@@ -68,7 +68,7 @@ Lists all questions.
 + Response 200 (application/prs.hal-forms+json)
 
     + Body
-    
+
             {  
                "_links":{  
                   "self":{  
@@ -110,6 +110,7 @@ Lists all questions.
                   ]
                }
             }
+            
 
 
 ### Create a New Question [POST]
@@ -122,7 +123,7 @@ object containing a question and an author.
 + Request (application/json)
 
     + Body
-    
+
             {
                 "question": "Who are you?",
                 "author": "The Who"
@@ -262,7 +263,7 @@ Lists all answers _for a specific question_. This is a sub-resource of questions
 + Response 200 (application/prs.hal-forms+json)
 
     + Body
-    
+
             {  
                "_links":{  
                   "self":{  
@@ -304,7 +305,8 @@ Lists all answers _for a specific question_. This is a sub-resource of questions
                      ]
                   }
                }
-            } 
+            }
+            
 
 + Response 404 (application/json)
 
@@ -334,11 +336,12 @@ Adds a new answer to a question
 + Request (application/json)
 
     + Body
-    
+
             {  
                "answer":"Get to da choppah!",
                "author":"Big Arnold"
             }
+            
 
 + Response 201 (application/prs.hal-forms+json)
 
@@ -360,37 +363,39 @@ Adds a new answer to a question
 
         If the question id is not valid or it is not found, this error is given.
 
-    + Body  
-    
+    + Body
+
             {
                 "statusCode": 404,
                 "error": "Not Found",
                 "message": "Question id not found!"
             }
             
+            
 + Response 406 (application/json)
 
         If the answer already exists, or if the request body is missing parameters
 
-    + Body  
-    
+    + Body
+
             {
                 "statusCode": 406,
                 "error": "Not Acceptable",
                 "message": "Answer already exists! or Invalid data! Please use format: {'answer': 'answer here', 'author': 'name here'}"
-            }            
+            }
+            
 
 + Response 415 (application/json)
 
         If the request is not application/json
         
-    + Body  
-    
+    + Body
+
             {
                 "statusCode": 415,
                 "error": "Unsupported Media Type",
                 "message": "Media type not supported! Please use application/JSON"
-            }           
+            }
             
     
 ## Answer [/questions/{id}/answers/{answer_id}]
@@ -406,13 +411,14 @@ Gets a specific answer for a specific question.
 + Parameters
 
     + id (string, required) - id for an existing question
-    
+
     + answer_id (string, required) - id for an existing answer
+    
 
 + Response 200 (application/prs.hal-forms+json)
 
     + Body
-    
+
             {  
                "_id":"5ccd7ca31866814fa896a3de",
                "answer":"Get to da choppah!",
@@ -459,6 +465,45 @@ Gets a specific answer for a specific question.
                }
             }
 
++ Response 404 (application/json)
+
+        This error is returned, if answer or question id are not valid.
+        It is also returned if question doesn't exist or the given answer
+        does not match with the given question.
+
+    + Body
+
+            {
+                "statusCode": 404,
+                "error": "Not Found",
+                "message": "This is not answer for this question! or Question id not found!"
+            }
+
+
++ Response 406 (application/json)
+
+        If the answer already exists, or if the request body is missing parameters
+
+    + Body
+
+            {
+                "statusCode": 406,
+                "error": "Not Acceptable",
+                "message": "Answer already exists! or Invalid data! Please use format: {'answer': 'answer here', 'author': 'name here'}"
+            }
+            
+
++ Response 415 (application/json)
+
+        If the request is not application/json
+        
+    + Body
+
+            {
+                "statusCode": 415,
+                "error": "Unsupported Media Type",
+                "message": "Media type not supported! Please use application/JSON"
+            }
 
 ### Edit a specific answer [PUT]
 
@@ -469,22 +514,23 @@ Edits a specific answer for a specific question.
 + Parameters
 
     + id (string, required) - id for an existing question
-    
+
     + answer_id (string, required) - id for an existing answer
 
 + Request (application/json)
 
     + Body
-    
+
             {  
                "answer":"Where is my machine gun!",
                "author":"Big Arnold"
             }
+            
 
 + Response 200 (application/prs.hal-forms+json)
 
-    + Body           
-            
+    + Body
+
             {  
                "_id":"5ccd7ca31866814fa896a3de",
                "answer":"Where is my machine gun!",
@@ -499,23 +545,79 @@ Edits a specific answer for a specific question.
             
                }
             }
+            
 
- 
++ Response 404 (application/json)
+
+        This error is returned, if answer or question id are not valid.
+        It is also returned if question doesn't exist or the given answer
+        does not match with the given question.
+
+    + Body
+
+            {
+                "statusCode": 404,
+                "error": "Not Found",
+                "message": "This is not answer for this question! or Question id not found!"
+            }
+
+
++ Response 406 (application/json)
+
+        If the answer already exists, or if the request body is missing parameters
+
+    + Body
+
+            {
+                "statusCode": 406,
+                "error": "Not Acceptable",
+                "message": "Answer already exists! or Invalid data! Please use format: {'answer': 'answer here', 'author': 'name here'}"
+            }
+            
+
++ Response 415 (application/json)
+
+        If the request is not application/json
+        
+    + Body
+
+            {
+                "statusCode": 415,
+                "error": "Unsupported Media Type",
+                "message": "Media type not supported! Please use application/JSON"
+            }
+
+
 ### Delete a specific answer [DELETE]
 
-Deletes a specific answer for a specific question.
+        Deletes a specific answer for a specific question.
 
 + Relation: delete
 
 + Parameters
 
     + id (string, required) - id for an existing question
-    
+
     + answer_id (string, required) - id for an existing answer
     
 
 + Response 200 (application/prs.hal-forms+json)
 
-    + Body  
-    
+    + Body
+
             "/questions/5ccd76291866814fa896a3dd/answers/5ccd7ca31866814fa896a3de DELETED!"
+
+
++ Response 404 (application/json)
+
+        This error is returned, if answer or question id are not valid.
+        It is also returned if question doesn't exist or the given answer
+        does not match with the given question.
+
+    + Body
+
+            {
+                "statusCode": 404,
+                "error": "Not Found",
+                "message": "This is not answer for this question! or Question id not found!"
+            }
