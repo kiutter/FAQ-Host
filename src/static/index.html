@@ -1,0 +1,109 @@
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<style>
+			table#example {
+				border-collapse: collapse;
+			}
+			#example tr {
+				background-color: #eee;
+				border-top: 1px solid #fff;
+			}
+			#example tr:hover {
+				background-color: #ccc;
+			}
+			#example th {
+				background-color: #fff;
+			}
+			#example th,
+			#example td {
+				padding: 3px 5px;
+			}
+			#example td:hover {
+				cursor: pointer;
+			}
+		</style>
+
+		<script>
+			function GetQuestions() {
+				var row = "";
+				$.get("http://127.0.0.1:8080/api/questions/", function(data, status) {
+					//var response = JSON.parse(data);
+					//console.log(data["_embedded"]["questions"]);
+					var questions = data["_embedded"]["questions"];
+					for (var i in questions) {
+						row =
+							row +
+							"<tr id=" +
+							i +
+							"><td id=" +
+							i +
+							"A>" +
+							questions[i].question +
+							"</td><td id=" +
+							i +
+							"B>" +
+							questions[i]._links.self.href +
+							"</td><td><button onclick=GetQuestion('" +
+							i +
+							"B')>Get question</button></td><tr>";
+					}
+					document.getElementById("questions").innerHTML = '<table id="#table" border=1>' + row + "</table>";
+					row = "";
+				});
+			}
+			function GetQuestion(i) {
+				var row = "";
+				var get_id = document.getElementById(i).innerHTML;
+				$.get("http://127.0.0.1:8080/api" + get_id, function(data, status) {
+					console.log(data);
+					$.get("http://127.0.0.1:8080/api" + get_id + "/answers", function(data2) {
+						//console.log(data2._embedded.answers[0]);
+						var all_answers = data2._embedded.answers;
+
+						for (i in all_answers) {
+							console.log(all_answers[i]._id);
+							row =
+								row +
+								"<tr><td><b>Answer:</b>" +
+								all_answers[i].answer +
+								"</td><td><b>ID:</b>" +
+								all_answers[i]._id +
+								"</td><td><button onclick=GetAnswer('" +
+								get_id +
+								"," + //pilkku sotkee, ei tajua erillisiksi parametreiksi
+								all_answers[i]._id +
+								"')>Get answer</button></td></tr>";
+						}
+
+						document.getElementById("question").innerHTML =
+							"<table border=1><tr><td><b>Author:</b>" +
+							data.author +
+							"</td><td><b>Question:</b>" +
+							data.question +
+							"</td><td><b>Date:</b>" +
+							data.time +
+							'</td></tr><tr><td><b>Answers:</b></td><td colspan="3"><table>' +
+							row +
+							"</table></td></tr></table>";
+						row = "";
+					});
+				});
+			}
+
+			function GetAnswer(qid, aid) {
+				$.get("http://127.0.0.1:8080/api" + qid + "/answers/" + aid, function(data, status) {
+					document.getElementById("answer").innerHTML =
+						"<table border=1><tr><td><b>Author:</b>" + data.author + "</td><td><b>Question:</b>" + data.answer + "</td><td><b>Date:</b>" + data.time + "</td></tr></table>";
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<button onclick="GetQuestions()">Get questions</button>
+		<div id="questions"></div>
+		<div id="question"></div>
+		<div id="answer"></div>
+	</body>
+</html>

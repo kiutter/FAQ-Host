@@ -2,18 +2,25 @@
 const mongoose = require("mongoose"),
 	express = require("express"),
 	app = express(),
-	bodyParser = require("body-parser");
+	bodyParser = require("body-parser"),
+	path = require("path"),
+	cors = require("cors");
 
 //Import routes:
 const routes = require("./routes");
 
 //Add bodyparser to handle JSON
 app.use(bodyParser.json());
+app.use(cors());
 app.use(
 	bodyParser.urlencoded({
 		extended: true
 	})
 );
+
+app.get("/", function(req, res) {
+	res.sendFile(path.join(__dirname + "/static/index.html"));
+});
 
 //Get routes from separate file
 app.use("/api/questions", routes);
