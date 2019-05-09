@@ -564,14 +564,14 @@ Edits a specific answer for a specific question.
 
 + Response 406 (application/json)
 
-        If the answer already exists, or if the request body is missing parameters
+        If the request body is missing parameters
 
     + Body
 
             {
                 "statusCode": 406,
                 "error": "Not Acceptable",
-                "message": "Answer already exists! or Invalid data! Please use format: {'answer': 'answer here', 'author': 'name here'}"
+                "message": "Invalid data! Please use format: {'answer': 'answer here', 'author': 'name here'}"
             }
             
 
