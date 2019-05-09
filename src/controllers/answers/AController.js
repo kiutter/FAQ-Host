@@ -318,7 +318,7 @@ exports.editAnswer = async (req, res) => {
 										.orFail()
 										.exec((err, A) => {
 											if (err) {
-												err = boom.notAcceptable("Answer already exists!");
+												err = boom.notFound("This is not answer for this question!");
 												res.status(err.output.statusCode).json(err.output.payload);
 											} else {
 												var OneAnswer = halson({
