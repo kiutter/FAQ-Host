@@ -21,6 +21,7 @@ app.use(
 app.get("/", function(req, res) {
 	res.sendFile(path.join(__dirname + "/static/index.html"));
 });
+app.use(express.static(__dirname + "/static"));
 
 //Get routes from separate file
 app.use("/api/questions", routes);

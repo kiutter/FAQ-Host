@@ -1,20 +1,70 @@
-table#example {
+body {
+	font-size: 90%;
+}
+table {
 	border-collapse: collapse;
+	background-color: rgba(226, 224, 218, 0.801);
+	border: 1px solid #0000;
+	font-size: 90%;
+	margin: 5px;
+	table-layout: fixed;
 }
-#example tr {
-	background-color: #eee;
-	border-top: 1px solid #fff;
+th,
+td {
+	border-bottom: 1px solid rgb(78, 72, 72);
+	border-top: 1px solid rgb(78, 72, 72);
+	word-wrap: break-word;
 }
-#example tr:hover {
-	background-color: #ccc;
+td#align {
+	text-align: left;
 }
-#example th {
-	background-color: #fff;
+button {
+	font-size: 90%;
 }
-#example th,
-#example td {
-	padding: 3px 5px;
+table#Main {
+	border-collapse: collapse;
+	background-color: rgba(230, 214, 162, 0.527);
+	border: 1px solid #0000;
+	font-size: 90%;
+	margin: 5px;
+	border-left: 1px solid rgb(78, 72, 72);
+	border-right: 1px solid rgb(78, 72, 72);
 }
-#example td:hover {
+table#Get_Answer,
+table#Answer_table,
+table#qlist {
+	border-collapse: collapse;
+	border-left: 1px solid rgba(78, 72, 72, 0.233);
+	border-right: 1px solid rgb(78, 72, 72, 0.233);
+}
+table#Second,
+table#_answer {
+	border-collapse: collapse;
+	background-color: rgba(230, 214, 162, 0.527);
+	border: 1px solid #0000;
+	font-size: 90%;
+	margin: 5px;
+	border-left: 1px solid rgba(78, 72, 72);
+	border-right: 1px solid rgb(78, 72, 72);
+}
+.input {
+	width: 100%;
+}
+.button {
+	width: 100%;
+	background-color: rgb(100, 95, 80); /* Green */
+	border: none;
+	color: white;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 10px;
+	-webkit-transition-duration: 0.4s; /* Safari */
+	transition-duration: 0.4s;
 	cursor: pointer;
+}
+
+.button:hover {
+	background-color: rgb(124, 120, 107);
+	color: white;
 }
