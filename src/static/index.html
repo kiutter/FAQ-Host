@@ -1,12 +1,17 @@
 <html>
 	<head>
+		<!–– external file for stylesheet -->
 		<link href="/css/style.css" rel="stylesheet" type="text/css" />
 
+		<!–– link to jquery -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
+		<!–– external file javascript, where all the magic happens! -->
 		<script src="/js/client.js"></script>
 	</head>
+	<!–– when entering the page, all questions are loaded -->
 	<body onLoad="GetQuestions()">
+		<!––some tables with classes and ids for javascript to put content to -->
 		<table width="1450">
 			<td width="450">
 				<table width="437" id="Main">

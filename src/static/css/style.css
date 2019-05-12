@@ -51,20 +51,20 @@ table#_answer {
 	width: 100%;
 }
 .button {
-	width: 100%;
-	background-color: rgb(100, 95, 80); /* Green */
-	border: none;
-	color: white;
 	text-align: center;
 	text-decoration: none;
+	width: 100%;
+	background-color: rgb(100, 95, 80);
+	border: none;
+	cursor: pointer;
+	color: white;
 	display: inline-block;
 	font-size: 10px;
-	-webkit-transition-duration: 0.4s; /* Safari */
+	-webkit-transition-duration: 0.4s;
 	transition-duration: 0.4s;
-	cursor: pointer;
 }
 
 .button:hover {
-	background-color: rgb(124, 120, 107);
 	color: white;
+	background-color: rgb(124, 120, 107);
 }
