@@ -12,7 +12,10 @@ exports.addAnswer = async (req, res) => {
 		if (mongoose.Types.ObjectId.isValid(req.params.id)) {
 			if (req.is("*/json")) {
 				models.Question.findById(req.params.id, (err, que) => {
-					if (err) throw new Error(err);
+					if (err) {
+						console.log("");
+					}
+
 					// New answer:
 					if (que) {
 						if (req.body.answer && req.body.author) {
@@ -57,13 +60,7 @@ exports.addAnswer = async (req, res) => {
 						err = boom.notFound("Question id not found!");
 						res.status(err.output.statusCode).json(err.output.payload);
 					}
-				})
-					.then(answer => {
-						//console.log("ok");
-					})
-					.catch(err => {
-						console.log(err);
-					});
+				});
 
 				return;
 			} else {
