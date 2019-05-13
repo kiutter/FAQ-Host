@@ -41,3 +41,26 @@ For local use and testing:
 
 - To run test scripts, the prequisites must have been met (NodeJS installed).
 - Run Run_tests.bat from bat-folder.
+
+# Used libraries
+
+## Node modules:
+
+    	- "body-parser": "^1.18.3",
+    	- "boom": "^7.3.0",
+    	- "chai": "^4.2.0",
+    	- "chai-http": "^4.3.0",
+    	- "chai-json-schema": "^1.5.0",
+    	- "cors": "^2.8.5",
+    	- "express": "^4.16.4",
+    	- "halson": "^3.0.0",
+    	- "mocha": "^6.1.4",
+    	- "mongodb": "^3.1.13",
+    	- "mongoose": "^5.4.19",
+    	- "mongoose-unique-validator": "^2.0.2",
+    	- "nodemon": "^1.18.10",
+    	- "request": "^2.88.0"
+
+## Client
+
+        - jQuery 3.4.0

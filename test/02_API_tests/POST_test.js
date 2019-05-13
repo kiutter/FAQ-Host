@@ -4,8 +4,6 @@ const models = require("../../src/models/models");
 let chai = require("chai");
 let chaiHttp = require("chai-http");
 let server = require("../../src/app.js");
-const mongoose = require("mongoose");
-let should = chai.should();
 
 chai.use(chaiHttp);
 chai.use(require("chai-json-schema"));

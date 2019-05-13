@@ -15,6 +15,7 @@ function GetQuestions() {
 	var row = "";
 	$.get("http://127.0.0.1:8080/api/questions/", function(data, status) {
 		var questions = data["_embedded"]["questions"]; //information from response body
+		console.log(questions);
 		for (var i in questions) {
 			//loop through questions and format them to table rows.
 			row =
@@ -53,7 +54,7 @@ function GetQuestion(i) {
 		//get question
 		$.get("http://127.0.0.1:8080/api/questions/" + get_id + "/answers", function(data2) {
 			//get answers
-
+			console.log(get_id);
 			var all_answers = data2._embedded.answers;
 
 			for (i in all_answers) {
@@ -128,6 +129,10 @@ function EditAnswer(qid, aid) {
 			//when PUT is successfull, do this
 			GetQuestion(qid); //update answers table for one question.
 			console.log("Updated!");
+		},
+		error: function(jqxhr) {
+			var error = JSON.parse(jqxhr.responseText);
+			document.getElementById("error").innerHTML = error.message;
 		}
 	});
 }
@@ -160,6 +165,11 @@ function addQuestion() {
 		data: '{ "question":"' + question + '", "author":"' + author + '" }', //body
 		success: function() {
 			GetQuestions(); //again update the table with new question.
+			document.getElementById("error").innerHTML = "";
+		},
+		error: function(jqxhr) {
+			var error = JSON.parse(jqxhr.responseText);
+			document.getElementById("error").innerHTML = error.message;
 		}
 	});
 }
@@ -178,6 +188,10 @@ function addAnswer(id) {
 		data: '{ "answer":"' + answer + '", "author":"' + author + '" }', //body
 		success: function() {
 			GetQuestion(id); //update answers table with new answer.
+		},
+		error: function(jqxhr) {
+			var error = JSON.parse(jqxhr.responseText);
+			document.getElementById("error").innerHTML = error.message;
 		}
 	});
 }

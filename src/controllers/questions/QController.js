@@ -69,7 +69,7 @@ exports.addQuestion = async (req, res) => {
 			const { question, author } = req.body;
 			if (question && author) {
 				//make sure that the request has question and author for it
-				var AQuestion = await models.Question.create({ question, author }, (err, question) => {
+				models.Question.create({ question, author }, (err, question) => {
 					if (err) {
 						err = boom.notAcceptable("Question already exists!"); // Question already exists
 						res.status(err.output.statusCode).json(err.output.payload);
@@ -84,7 +84,7 @@ exports.addQuestion = async (req, res) => {
 					}
 				});
 			} else {
-				err = boom.notAcceptable("Invalid data! Please use format: {'question': 'question here', 'author': 'name here'}"); // didn't have all parameters
+				err = boom.notAcceptable("Invalid data! Please provide a question and an author!"); // didn't have all parameters
 				res.status(err.output.statusCode).json(err.output.payload);
 			}
 		} else {

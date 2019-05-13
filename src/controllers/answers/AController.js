@@ -53,7 +53,7 @@ exports.addAnswer = async (req, res) => {
 								}
 							});
 						} else {
-							err = boom.notAcceptable("Invalid data! Please use format: {'answer': 'answer here', 'author': 'name here'}"); // didn't have all parameters
+							err = boom.notAcceptable("Invalid data! Please provide an answer and an author!"); // didn't have all parameters
 							res.status(err.output.statusCode).json(err.output.payload);
 						}
 					} else {
@@ -297,7 +297,7 @@ exports.editAnswer = async (req, res) => {
 		if (req.is("*/json")) {
 			if (mongoose.Types.ObjectId.isValid(req.params.id) && mongoose.Types.ObjectId.isValid(req.params.answer_id)) {
 				if ((req.body.answer && req.body.author) || req.body.answer) {
-					var question = models.Question.findById(req.params.id)
+					var question = await models.Question.findById(req.params.id)
 						.orFail()
 						.exec((err, A) => {
 							if (err) {
@@ -315,7 +315,7 @@ exports.editAnswer = async (req, res) => {
 										.orFail()
 										.exec((err, A) => {
 											if (err) {
-												err = boom.notFound("This is not answer for this question!");
+												err = boom.notAcceptable("Answer already exists!");
 												res.status(err.output.statusCode).json(err.output.payload);
 											} else {
 												var OneAnswer = halson({
@@ -338,7 +338,7 @@ exports.editAnswer = async (req, res) => {
 							}
 						});
 				} else {
-					err = boom.notAcceptable("Invalid data! Please use format: {'answer': 'answer here'} or {'answer': 'answer here', 'author': 'name here'}"); // didn't have correct parameters
+					err = boom.notAcceptable("Invalid data! Please provide a question and author!"); // didn't have correct parameters
 					res.status(err.output.statusCode).json(err.output.payload);
 				}
 			} else {

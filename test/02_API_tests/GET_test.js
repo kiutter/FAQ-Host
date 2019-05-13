@@ -6,7 +6,6 @@ let chai = require("chai");
 let chaiHttp = require("chai-http");
 let server = require("../../src/app.js");
 const mongoose = require("mongoose");
-let should = chai.should();
 
 chai.use(chaiHttp);
 chai.use(require("chai-json-schema"));
@@ -65,7 +64,7 @@ describe("API Test | /api/questions/{id}", () => {
 	it("API Test | GET Test id that doesn't exist.", done => {
 		chai
 			.request(server)
-			.get("/api/questions/cant-find-me/") //sends a GET request to the uri
+			.get("/api/questions/notexisting/") //sends a GET request to the uri
 			.end((err, res) => {
 				res.status.should.be.equal(404); //status should be 404
 				done();

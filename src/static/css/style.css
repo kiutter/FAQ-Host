@@ -68,3 +68,10 @@ table#_answer {
 	color: white;
 	background-color: rgb(124, 120, 107);
 }
+
+.error {
+	font-size: 100%;
+	color: red;
+	text-align: center;
+	background-color: rgb(226, 224, 218, 0.801);
+}
