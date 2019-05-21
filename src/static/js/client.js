@@ -15,7 +15,6 @@ function GetQuestions() {
 	var row = "";
 	$.get("http://127.0.0.1:8080/api/questions/", function(data, status) {
 		var questions = data["_embedded"]["questions"]; //information from response body
-		console.log(questions);
 		for (var i in questions) {
 			//loop through questions and format them to table rows.
 			row =
